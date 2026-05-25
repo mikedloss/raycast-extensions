@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { ComponentProps, ComponentType } from "react";
 import { Form, ActionPanel, Action, Toast, popToRoot, Icon } from "@raycast/api";
 import ampStart from "./amp-start";
@@ -32,10 +32,20 @@ enum SessionType {
 
 export default function SessionWithDuration() {
   const [sessionType, setSessionType] = useState<SessionType>(SessionType.duration);
-  const [interval, setInterval] = useState<keyof typeof Intervals>(Intervals.minutes);
+  const [interval, setDurationUnit] = useState<keyof typeof Intervals>(Intervals.minutes);
   const [duration, setDuration] = useState<string>(DefaultDuration.minutes);
   const [target, setTarget] = useState<Date>(getDefaultTarget);
-  const earliestTarget = useMemo(() => getMinimumUntilDate(), [sessionType]);
+  const [earliestTarget, setEarliestTarget] = useState(getMinimumUntilDate);
+
+  useEffect(() => {
+    if (sessionType !== SessionType.time) return;
+
+    const refreshEarliestTarget = () => setEarliestTarget(getMinimumUntilDate());
+    refreshEarliestTarget();
+    const intervalId = setInterval(refreshEarliestTarget, 60_000);
+
+    return () => clearInterval(intervalId);
+  }, [sessionType]);
 
   useEffect(() => {
     if (sessionType !== SessionType.time) return;
@@ -87,7 +97,7 @@ export default function SessionWithDuration() {
 
   function handleChangeDuration(newInterval: keyof typeof Intervals) {
     if (interval !== newInterval) {
-      setInterval(newInterval);
+      setDurationUnit(newInterval);
     }
   }
 

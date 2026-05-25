@@ -63,7 +63,7 @@ export default async function Command(args?: CommandArgs) {
   await showHUD(
     duration && interval
       ? `New session started: ${formatDurationBreakdown(durationToTotalMinutes(duration, interval))}`
-      : "New default session started"
+      : "New default session started",
   );
   return true;
 }

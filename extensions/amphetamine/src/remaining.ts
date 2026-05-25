@@ -1,7 +1,7 @@
 import { Toast, showHUD, open } from "@raycast/api";
 import { runAppleScript } from "run-applescript";
 
-import { formatDurationBreakdown } from "./session-time";
+import { formatRemainingSeconds } from "./session-time";
 import { AMPHETAMINE_DOWNLOAD_URL, checkIfAmphetamineInstalled } from "./utils";
 
 const RemainingTimeResults = {
@@ -12,8 +12,6 @@ const RemainingTimeResults = {
 };
 
 export default async function Command() {
-  const ONE_MINUTE_IN_SECONDS = 60;
-
   const toast = new Toast({
     title: "Getting remaining time",
     style: Toast.Style.Animated,
@@ -44,11 +42,10 @@ export default async function Command() {
   `);
 
   if (Number(remainingTime) > 0) {
-    const totalMinutes = Math.floor(Number(remainingTime) / ONE_MINUTE_IN_SECONDS);
-    remainingTime = formatDurationBreakdown(totalMinutes);
+    remainingTime = formatRemainingSeconds(Number(remainingTime));
   }
 
   await showHUD(
-    RemainingTimeResults[remainingTime as keyof typeof RemainingTimeResults] ?? `Remaining time: ${remainingTime}`
+    RemainingTimeResults[remainingTime as keyof typeof RemainingTimeResults] ?? `Remaining time: ${remainingTime}`,
   );
 }

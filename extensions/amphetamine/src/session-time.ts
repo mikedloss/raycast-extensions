@@ -14,6 +14,23 @@ export function formatDateTime(date: Date): string {
   return date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 }
 
+const SECONDS_PER_MINUTE = 60;
+const SECONDS_PER_HOUR = 3600;
+
+/** Formats Amphetamine `session time remaining` (seconds) as `HH:MMh` or `MM:SSmin`. */
+export function formatRemainingSeconds(totalSeconds: number): string {
+  const whole = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(whole / SECONDS_PER_HOUR);
+  const minutes = Math.floor((whole % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+  const seconds = whole % SECONDS_PER_MINUTE;
+
+  if (hours > 0) {
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}h`;
+  }
+
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}min`;
+}
+
 export function getSessionTime(target: Date, now = new Date()): ParsedTime | undefined {
   if (target <= now) {
     return;
