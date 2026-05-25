@@ -1,6 +1,6 @@
 # Changelog
 
-## [Add until-time option for configurable sessions] - {PR_MERGE_DATE}
+## [Add until-time option for configurable sessions] - 2026-05-25
 
 - Add an until-time option to the configurable session command.
 
